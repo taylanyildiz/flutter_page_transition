@@ -25,17 +25,12 @@ abstract class RepleceablePageAction extends StatelessWidget {
     onChangePosition?.call(position);
   }
 
-  late DragUpdateDetails position;
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onHorizontalDragUpdate: (detail) => {
-        position = detail,
-        !currentPage
-            ? onChangePosition
-            : () => _handleChangePosition(context, position),
-      },
+      onHorizontalDragUpdate: (detail) => !currentPage
+          ? onChangePosition
+          : () => _handleChangePosition(context, detail),
       child: buildAction(context),
     );
   }
