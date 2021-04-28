@@ -1,6 +1,6 @@
 {
-    "name": "flutter_slidable_package_demo",
-    "short_name": "flutter_slidable_package_demo",
+    "name": "flutter_page_transition",
+    "short_name": "flutter_page_transition",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

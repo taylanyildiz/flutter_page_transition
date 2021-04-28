@@ -1,4 +1,4 @@
-# flutter_slidable_package_demo
+# flutter_page_transition
 
 A new Flutter project.
 
