@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 abstract class RepleceablePageAction extends StatelessWidget {
   RepleceablePageAction({
     Key? key,
-    this.onPosition,
+    this.onChangePosition,
     this.currentPage = false,
   }) : super(key: key);
 
@@ -16,13 +16,13 @@ abstract class RepleceablePageAction extends StatelessWidget {
   /// show current page
   ///
   /// Change poisiton with gesture <=> position [Offset]
-  final VoidCallback? onPosition;
+  final ValueChanged? onChangePosition;
 
-  /// Calls [onPosition] if not null and change the [TransitionPage]
+  /// Calls [onChangePosition] if not null and change the [TransitionPage]
   /// that encloses the given context
-  /// this position [DragUpdateDetails] change our showing page
+  /// this position  [DragUpdateDetails] change our showing page horizontal position.
   void _handleChangePosition(BuildContext context, DragUpdateDetails position) {
-    onPosition?.call();
+    onChangePosition?.call(position);
   }
 
   late DragUpdateDetails position;
@@ -33,17 +33,10 @@ abstract class RepleceablePageAction extends StatelessWidget {
       onHorizontalDragUpdate: (detail) => {
         position = detail,
         !currentPage
-            ? onPosition
+            ? onChangePosition
             : () => _handleChangePosition(context, position),
       },
-      child: Material(
-        child: InkWell(
-          onTap: !currentPage
-              ? onPosition
-              : () => _handleChangePosition(context, position),
-          child: buildAction(context),
-        ),
-      ),
+      child: buildAction(context),
     );
   }
 
@@ -56,11 +49,9 @@ class PageAction extends RepleceablePageAction {
   PageAction({
     Key? key,
     required this.child,
-    VoidCallback? onPosition,
     bool currentPage = false,
   }) : super(
           key: key,
-          onPosition: onPosition,
           currentPage: currentPage,
         );
 
@@ -75,11 +66,9 @@ class PageTransitionAction extends RepleceablePageAction {
   PageTransitionAction({
     Key? key,
     required this.child,
-    VoidCallback? onPosition,
     bool currentPage = false,
   }) : super(
           key: key,
-          onPosition: onPosition,
           currentPage: currentPage,
         );
 

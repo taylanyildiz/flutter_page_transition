@@ -18,7 +18,6 @@ class _HomeScreenState extends State<HomeScreen> {
         body: Stack(
       children: [
         PageTransitionAction(
-          onPosition: () => print('hey'),
           child: Scaffold(
             backgroundColor: Colors.red,
           ),
