@@ -15,20 +15,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            PageTransitionAction(
-                onPosition: () => print('hey'),
-                child: Container(
-                  color: Colors.red,
-                  height: 100.0,
-                  width: 100.0,
-                )),
-          ],
+        body: Stack(
+      children: [
+        PageTransitionAction(
+          onPosition: () => print('hey'),
+          child: Scaffold(
+            backgroundColor: Colors.red,
+          ),
         ),
-      ),
-    );
+      ],
+    ));
   }
 }

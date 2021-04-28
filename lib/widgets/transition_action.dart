@@ -20,7 +20,9 @@ abstract class RepleceablePageAction extends StatelessWidget {
 
   /// Calls [onPosition] if not null and change the [TransitionPage]
   /// that encloses the given context
+  /// this position [DragUpdateDetails] change our showing page
   void _handleChangePosition(BuildContext context, DragUpdateDetails position) {
+    print(position);
     onPosition?.call();
   }
 
@@ -29,9 +31,11 @@ abstract class RepleceablePageAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onPanUpdate: (page) => {
-        print(page),
-        position = page,
+      onHorizontalDragUpdate: (detail) => {
+        position = detail,
+        !currentPage
+            ? onPosition
+            : () => _handleChangePosition(context, position),
       },
       child: Material(
         child: InkWell(
