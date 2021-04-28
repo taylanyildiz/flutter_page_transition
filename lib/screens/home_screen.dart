@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_page_transition/widgets/fractionally_aligned_size_box.dart';
-import 'package:flutter_page_transition/widgets/transition_action.dart';
+import 'package:flutter_page_transition/widgets/widget.dart';
 
 class HomeScreen extends StatefulWidget {
   final String? title;
@@ -16,8 +15,16 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
-      children: [],
-    ));
+      body: Stack(
+        children: [
+          PageTransitionAction(
+            child: Container(
+              color: Colors.red,
+            ),
+            onChangePosition: (vale) => print(''),
+          )
+        ],
+      ),
+    );
   }
 }
