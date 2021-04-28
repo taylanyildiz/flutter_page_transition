@@ -17,12 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          PageTransitionAction(
-            child: Container(
-              color: Colors.red,
-            ),
-            onChangePosition: (vale) => print(''),
-          )
+          PageTransitonView(),
         ],
       ),
     );

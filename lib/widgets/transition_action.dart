@@ -41,7 +41,7 @@ abstract class RepleceablePageAction extends StatelessWidget {
       BuildContext context, DragUpdateDetails detail) {
     print('vertcal:$detail');
     onChangePosition?.call(detail);
-    PageTransitonView.of(context);
+    PageTransitonView.of(context)!.changePage(detail);
   }
 
   /// If the [Axis] is horziontal or vertical
