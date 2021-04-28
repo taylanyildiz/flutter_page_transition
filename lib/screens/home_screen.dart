@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_page_transition/widgets/transition_page.dart';
+import 'package:flutter_page_transition/widgets/transition_action.dart';
 
 class HomeScreen extends StatefulWidget {
   final String? title;

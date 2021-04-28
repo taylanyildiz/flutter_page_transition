@@ -22,7 +22,6 @@ abstract class RepleceablePageAction extends StatelessWidget {
   /// that encloses the given context
   /// this position [DragUpdateDetails] change our showing page
   void _handleChangePosition(BuildContext context, DragUpdateDetails position) {
-    print(position);
     onPosition?.call();
   }
 
