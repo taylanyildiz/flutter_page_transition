@@ -2,6 +2,30 @@
 
 A new Flutter project.
 
+
+
+```dart
+   PageTransitionController? _controller;
+
+    @override
+    void initState() {
+        super.initState();
+        _controller = PageTransitionController(
+        initalizePage: 0,
+        onTranstionChanged: (animation) => {},
+        );
+    }
+```
+
+
+```dart
+    PageTransitonView(
+        controller: _controller,
+        direction: Axis.horizontal,
+        pages: _screens,
+    ),
+```
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.

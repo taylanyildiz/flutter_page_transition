@@ -25,9 +25,6 @@ abstract class TransitionActionDelegate {
   /// Returns the child with given index
   Widget build(BuildContext cntext, int index, Animation animation,
       TransitionActionType actionType);
-
-  /// Returns the number of actions this delegate will build
-  int get actionCount;
 }
 
 class TransitionActionListDelageteBuilder extends TransitionActionDelegate {
@@ -37,15 +34,12 @@ class TransitionActionListDelageteBuilder extends TransitionActionDelegate {
   });
 
   /// Page lists
-  final List<Widget>? pages;
-
-  @override
-  int get actionCount => pages?.length ?? 0;
+  final Widget? pages;
 
   @override
   Widget build(BuildContext cntext, int index, Animation? animation,
           TransitionActionType actionType) =>
-      pages![index];
+      pages!;
 }
 
 class _TransitionScope extends InheritedWidget {
@@ -68,6 +62,7 @@ class PageTransitionController {
 
   /// Animation change page
   final ValueChanged<Animation>? onTranstionChanged;
+
   Animation? changeAnimation;
 
   PageTransitionController({
@@ -77,6 +72,27 @@ class PageTransitionController {
 }
 
 class PageTransitonView extends StatefulWidget {
+  const PageTransitonView({
+    Key? key,
+    this.direction = Axis.horizontal,
+    this.controller,
+    this.pages,
+  }) : super(key: key);
+
+  /// Page Direction
+  ///
+  /// Default horizontal.
+  final Axis? direction;
+
+  /// TransitionPageController have animation and initialize page for
+  ///
+  /// animation transition and change page
+  /// Have default value for animation and initialize page index
+  final PageTransitionController? controller;
+
+  /// Page Action List
+  final List<Widget>? pages;
+
   static PageTransitonViewState? of(BuildContext context) {
     final _TransitionScope? scope =
         context.dependOnInheritedWidgetOfExactType<_TransitionScope>();
@@ -87,7 +103,12 @@ class PageTransitonView extends StatefulWidget {
   PageTransitonViewState createState() => PageTransitonViewState();
 }
 
-class PageTransitonViewState extends State<PageTransitonView> {
+class PageTransitonViewState extends State<PageTransitonView>
+    with TickerProviderStateMixin {
+  ///
+  ///
+  /// Number of Pages Widget.
+  int? pageCount;
   @override
   void initState() {
     super.initState();
@@ -98,12 +119,17 @@ class PageTransitonViewState extends State<PageTransitonView> {
     super.dispose();
   }
 
-  void changePage(detail) {}
+  void changePage(DragUpdateDetails detail) {
+    print('detail = $detail');
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [],
+    return _TransitionScope(
+      state: this,
+      child: Stack(
+        children: [widget.pages![0]],
+      ),
     );
   }
 }

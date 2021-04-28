@@ -28,18 +28,11 @@ abstract class RepleceablePageAction extends StatelessWidget {
   /// Calls [onChangePosition] if not null and change the [TransitionPage]
   /// that encloses the given context
   /// this position  [DragUpdateDetails] change our showing page horizontal
-  void _handleChangePositionHorizontal(
-      BuildContext context, DragUpdateDetails detail) {
-    print('horizontal:$detail');
-    onChangePosition?.call(detail);
-  }
 
   /// Calls [onChangePosition] if not null and change the [TransitionPage]
   /// that encloses the given context
   /// this position  [DragUpdateDetails] change our showing page horizontal
-  void _handleChangePositionVertical(
-      BuildContext context, DragUpdateDetails detail) {
-    print('vertcal:$detail');
+  void _handleChangePosition(BuildContext context, DragUpdateDetails detail) {
     onChangePosition?.call(detail);
     PageTransitonView.of(context)!.changePage(detail);
   }
@@ -51,10 +44,10 @@ abstract class RepleceablePageAction extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onVerticalDragUpdate: (detail) => !directionIsAxis && currentPage
-          ? _handleChangePositionVertical(context, detail)
+          ? _handleChangePosition(context, detail)
           : null,
       onHorizontalDragUpdate: (detail) => directionIsAxis && currentPage
-          ? _handleChangePositionHorizontal(context, detail)
+          ? _handleChangePosition(context, detail)
           : null,
       child: buildAction(context),
     );
