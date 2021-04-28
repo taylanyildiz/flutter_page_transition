@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _controller = PageTransitionController(
       initalizePage: 0,
-      onTranstionChanged: (anim) => {},
+      onTranstionChanged: (animation) => {},
     );
   }
 

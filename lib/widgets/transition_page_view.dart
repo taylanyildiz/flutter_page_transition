@@ -128,7 +128,9 @@ class PageTransitonViewState extends State<PageTransitonView>
     return _TransitionScope(
       state: this,
       child: Stack(
-        children: [widget.pages![0]],
+        children: [
+          widget.pages![0],
+        ],
       ),
     );
   }
