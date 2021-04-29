@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 /// [TransitionActionType.circle]
 /// [TransitionActionType.shaher]
 enum TransitionActionType {
+  none,
   shaher,
   circle,
 }
@@ -59,9 +60,9 @@ class _TransitionScope extends InheritedWidget {
 class PageTransitionController {
   /// Constructor PageTransitionController
   PageTransitionController({
+    this.page,
     this.initalizePage,
     this.onTranstionChanged,
-    this.page,
   });
 
   /// current Page showing index
@@ -77,11 +78,14 @@ class PageTransitionController {
 }
 
 class PageTransitonView extends StatefulWidget {
+  /// Constructor PageTransitionView
   const PageTransitonView({
     Key? key,
+    required this.pages,
     this.direction = Axis.horizontal,
+    this.isShow = true,
     this.controller,
-    this.pages,
+    this.actionType = TransitionActionType.none,
   }) : super(key: key);
 
   /// Page Direction
@@ -97,6 +101,13 @@ class PageTransitonView extends StatefulWidget {
 
   /// Page List
   final List<Widget>? pages;
+
+  /// Specifies to close this slidable after the closest [PageTransitonView]'s position changed.
+  /// If false, the child will not show.
+  final bool? isShow;
+
+  /// Transition page animation selected
+  final TransitionActionType? actionType;
 
   static PageTransitonViewState? of(BuildContext context) {
     final _TransitionScope? scope =
@@ -137,6 +148,8 @@ class PageTransitonViewState extends State<PageTransitonView>
 
   @override
   void dispose() {
+    _transitionAnimationController!.dispose();
+
     super.dispose();
   }
 
@@ -149,9 +162,11 @@ class PageTransitonViewState extends State<PageTransitonView>
     });
   }
 
+  /// Check TransitionType
+  bool get _actionType => widget.actionType == TransitionActionType.none;
+
   /// Check Position by use Axis direction.
   Widget _checkPositionWidget(Widget child) {
-    ///
     if (direction)
       return _horizontalWidgetChild(child);
     else
@@ -166,6 +181,12 @@ class PageTransitonViewState extends State<PageTransitonView>
   /// [Axis] direction if Vertical
   Widget _verticalWidgetChild(Widget child) {
     return Container();
+  }
+
+  @override
+  void didUpdateWidget(PageTransitonView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isShow != oldWidget.isShow) {}
   }
 
   @override
