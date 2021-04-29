@@ -26,7 +26,11 @@ class _HomeScreenState extends State<HomeScreen> {
   final _screens = <Widget>[
     PageTransitionAction(
       currentPage: true,
-      child: Container(color: Colors.yellow),
+      child: Container(
+        height: 200,
+        width: 200,
+        color: Colors.yellow,
+      ),
       onChangePosition: (page) {},
     ),
     Scaffold(backgroundColor: Colors.red),

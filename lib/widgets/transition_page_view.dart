@@ -57,18 +57,23 @@ class _TransitionScope extends InheritedWidget {
 }
 
 class PageTransitionController {
+  /// Constructor PageTransitionController
+  PageTransitionController({
+    this.initalizePage,
+    this.onTranstionChanged,
+    this.page,
+  });
+
   /// current Page showing index
   final int? initalizePage;
 
   /// Animation change page
   final ValueChanged<Animation>? onTranstionChanged;
 
-  Animation? changeAnimation;
+  /// Number of page
+  final int? page;
 
-  PageTransitionController({
-    this.initalizePage,
-    this.onTranstionChanged,
-  });
+  Animation? changeAnimation;
 }
 
 class PageTransitonView extends StatefulWidget {
@@ -90,7 +95,7 @@ class PageTransitonView extends StatefulWidget {
   /// Have default value for animation and initialize page index
   final PageTransitionController? controller;
 
-  /// Page Action List
+  /// Page List
   final List<Widget>? pages;
 
   static PageTransitonViewState? of(BuildContext context) {
@@ -105,13 +110,29 @@ class PageTransitonView extends StatefulWidget {
 
 class PageTransitonViewState extends State<PageTransitonView>
     with TickerProviderStateMixin {
-  ///
-  ///
   /// Number of Pages Widget.
   int? pageCount;
+
+  /// Pages Offset position
+  Offset position = Offset(0, 0);
+
+  /// Animation Transition Controller
+  AnimationController? _transitionAnimationController;
+
+  /// Animation transition Animation
+  Animation? _transitonAnimation;
+
   @override
   void initState() {
     super.initState();
+    _transitionAnimationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1),
+    );
+    _transitonAnimation = CurvedAnimation(
+      parent: _transitionAnimationController!,
+      curve: Interval(0.0, 1.0, curve: Curves.linear),
+    );
   }
 
   @override
@@ -119,8 +140,32 @@ class PageTransitonViewState extends State<PageTransitonView>
     super.dispose();
   }
 
+  bool get direction => widget.direction == Axis.horizontal;
+
   void changePage(DragUpdateDetails detail) {
     print('detail = $detail');
+    setState(() {
+      position = detail.globalPosition;
+    });
+  }
+
+  /// Check Position by use Axis direction.
+  Widget _checkPositionWidget(Widget child) {
+    ///
+    if (direction)
+      return _horizontalWidgetChild(child);
+    else
+      return _verticalWidgetChild(child);
+  }
+
+  /// [Axis] direction if Horizontal
+  Widget _horizontalWidgetChild(Widget child) {
+    return Container();
+  }
+
+  /// [Axis] direction if Vertical
+  Widget _verticalWidgetChild(Widget child) {
+    return Container();
   }
 
   @override
@@ -128,9 +173,7 @@ class PageTransitonViewState extends State<PageTransitonView>
     return _TransitionScope(
       state: this,
       child: Stack(
-        children: [
-          widget.pages![0],
-        ],
+        children: [],
       ),
     );
   }

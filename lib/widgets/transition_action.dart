@@ -37,7 +37,7 @@ abstract class RepleceablePageAction extends StatelessWidget {
     PageTransitonView.of(context)!.changePage(detail);
   }
 
-  /// If the [Axis] is horziontal or vertical
+  /// If the [Axis] is horziontal return true
   bool get directionIsAxis => direction == Axis.horizontal;
 
   @override
@@ -58,6 +58,7 @@ abstract class RepleceablePageAction extends StatelessWidget {
 }
 
 class PageTransitionAction extends RepleceablePageAction {
+  /// Constructor [PageTransitionAction]
   PageTransitionAction({
     Key? key,
     required this.child,
