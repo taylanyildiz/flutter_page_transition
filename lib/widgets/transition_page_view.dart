@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 
 /// [TransitionActionType] change page animation
 /// which one you need it.
@@ -140,18 +141,20 @@ class PageTransitonViewState extends State<PageTransitonView>
   /// Number of Pages Widget.
   int? pageCount;
 
-  /// Pages Offset position
+  /// Pages Offset position set-get
   Offset position = Offset(0, 0);
+  Alignment _dragAlignment = Alignment.center;
 
   /// Animation Transition Controller
   AnimationController? _transitionAnimationController;
 
   /// Animation transition Animation
-  Animation? _transitonAnimation;
+  Animation<Alignment>? _transitonAnimation;
 
   @override
   void initState() {
     super.initState();
+    _transitionAnimationController = AnimationController(vsync: this);
   }
 
   @override
@@ -166,10 +169,37 @@ class PageTransitonViewState extends State<PageTransitonView>
 
   /// [GestureDetector] returns values [detail] location position.
   void changePage(detail) {
-    print('detail = $detail');
-    if (detail is DragUpdateDetails) {}
-    if (detail is DragDownDetails) {}
-    if (detail is DragEndDetails) {}
+    if (detail is DragUpdateDetails) {
+      setState(() => _dragAlignment += Alignment(
+          detail.delta.dx / (MediaQuery.of(context).size.width / 2), 0));
+    }
+    if (detail is DragDownDetails) _transitionAnimationController!.stop();
+    if (detail is DragEndDetails)
+      _runAnimation(detail, MediaQuery.of(context).size);
+  }
+
+  void _runAnimation(DragEndDetails detail, Size size) {
+    final pixelsPerSecond = detail.velocity.pixelsPerSecond;
+
+    _transitonAnimation = _transitionAnimationController!.drive(
+      AlignmentTween(
+        begin: _dragAlignment,
+        end: Alignment.center,
+      ),
+    );
+    final unitsPerSecondX = pixelsPerSecond.dx / size.width;
+    final unitsPerSecondY = pixelsPerSecond.dy / size.height;
+    final unitsPerSecond = Offset(unitsPerSecondX, unitsPerSecondY);
+    final unitVelocity = unitsPerSecond.distance;
+
+    const spring = SpringDescription(
+      mass: 30,
+      stiffness: 1,
+      damping: 1,
+    );
+
+    final simulation = SpringSimulation(spring, 0, 1, -unitVelocity);
+    _transitionAnimationController!.animateWith(simulation);
   }
 
   /// Check TransitionType
@@ -183,12 +213,12 @@ class PageTransitonViewState extends State<PageTransitonView>
       return _verticalWidgetChild(child);
   }
 
-  /// [Axis] direction if Horizontal
+  /// [Axis] direction if Horizontal layout.
   Widget _horizontalWidgetChild(Widget child) {
     return Container();
   }
 
-  /// [Axis] direction if Vertical
+  /// [Axis] direction if Vertical layout.
   Widget _verticalWidgetChild(Widget child) {
     return Container();
   }
@@ -201,10 +231,11 @@ class PageTransitonViewState extends State<PageTransitonView>
 
   @override
   Widget build(BuildContext context) {
-    return _TransitionScope(
-      state: this,
-      child: Stack(
-        children: [],
+    return Align(
+      alignment: _dragAlignment,
+      child: _TransitionScope(
+        state: this,
+        child: widget.pages![0],
       ),
     );
   }
