@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
+import 'package:flutter_page_transition/widgets/widget.dart';
 
 /// [TransitionActionType] change page animation
 /// which one you need it.
@@ -126,6 +127,7 @@ class PageTransitonView extends StatefulWidget {
   /// Transition page animation selected
   final TransitionActionType? actionType;
 
+  /// [_TransitionScope] changable position control.
   static PageTransitonViewState? of(BuildContext context) {
     final _TransitionScope? scope =
         context.dependOnInheritedWidgetOfExactType<_TransitionScope>();
@@ -155,6 +157,11 @@ class PageTransitonViewState extends State<PageTransitonView>
   void initState() {
     super.initState();
     _transitionAnimationController = AnimationController(vsync: this);
+    _transitionAnimationController!.addListener(() {
+      setState(() {
+        _dragAlignment = _transitonAnimation!.value;
+      });
+    });
   }
 
   @override
@@ -171,7 +178,7 @@ class PageTransitonViewState extends State<PageTransitonView>
   void changePage(detail) {
     if (detail is DragUpdateDetails) {
       setState(() => _dragAlignment += Alignment(
-          detail.delta.dx / (MediaQuery.of(context).size.width / 2), 0));
+          detail.delta.dx / (MediaQuery.of(context).size.width / 8), 0));
     }
     if (detail is DragDownDetails) _transitionAnimationController!.stop();
     if (detail is DragEndDetails)
@@ -231,11 +238,22 @@ class PageTransitonViewState extends State<PageTransitonView>
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Align(
       alignment: _dragAlignment,
       child: _TransitionScope(
         state: this,
-        child: widget.pages![0],
+        child: Stack(
+          children: [
+            PageTransitionAction(
+              child: Container(
+                color: Colors.red,
+                width: size.width * .6,
+                height: 200.0,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

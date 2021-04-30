@@ -23,30 +23,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  final _screens = <Widget>[
-    PageTransitionAction(
-      currentPage: true,
-      child: Container(
-        height: 200,
-        width: 200,
-        color: Colors.yellow,
-      ),
-    ),
-    Scaffold(backgroundColor: Colors.red),
-    Scaffold(backgroundColor: Colors.orange),
-    Scaffold(backgroundColor: Colors.blue),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
           PageTransitonView(
-            controller: _controller,
-            direction: Axis.horizontal,
-            pages: _screens,
-          ),
+            pages: [],
+          )
         ],
       ),
     );
