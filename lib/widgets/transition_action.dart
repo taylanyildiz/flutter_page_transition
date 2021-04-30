@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'widget.dart';
 
-abstract class RepleceablePageAction extends StatelessWidget {
-  RepleceablePageAction({
+final _alignDefault = Alignment(0.0, 0.0);
+
+abstract class ReplaceablePageAction extends StatelessWidget {
+  /// Constructor ReplaceablePageAction
+  ReplaceablePageAction({
     Key? key,
     this.direction = Axis.horizontal,
     this.currentPage = false,
@@ -32,7 +35,7 @@ abstract class RepleceablePageAction extends StatelessWidget {
   /// that encloses the given context
   /// this position  [DragUpdateDetails] change our showing page horizontal
   void _handleChangePosition(BuildContext context, detail) {
-    PageTransitonView.of(context)!.changePage(detail);
+    PageTransitionView.of(context)!.changePage(detail);
   }
 
   /// If the [Axis] is horziontal return true
@@ -52,19 +55,27 @@ abstract class RepleceablePageAction extends StatelessWidget {
   Widget buildAction(BuildContext context);
 }
 
-class PageTransitionAction extends RepleceablePageAction {
-  /// Constructor [PageTransitionAction] child [PageTransitonView]
+class PageTransitionAction extends ReplaceablePageAction {
+  /// Constructor [PageTransitionAction] child [PageTransitionView]
   PageTransitionAction({
     Key? key,
     required this.child,
     bool currentPage = false,
+    this.alignment,
   }) : super(
           key: key,
           currentPage: currentPage,
         );
 
+  /// Returns build action widget
   final Widget child;
 
+  /// Every page have alignment
+  final Alignment? alignment;
+
   @override
-  Widget buildAction(BuildContext context) => child;
+  Widget buildAction(BuildContext context) => Align(
+        alignment: alignment ?? _alignDefault,
+        child: child,
+      );
 }

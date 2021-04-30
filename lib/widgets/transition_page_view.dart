@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/physics.dart';
 import 'package:flutter_page_transition/widgets/widget.dart';
 
 /// [TransitionActionType] change page animation
@@ -15,6 +14,7 @@ enum TransitionActionType {
   circle,
 }
 
+/// Returns build widget child action [TransitionActionDelegateBuilder]
 typedef TransitionActionDelegateBuilder = Widget Function(BuildContext context,
     int index, Animation? animation, TransitionActionType actionType);
 
@@ -33,16 +33,16 @@ abstract class TransitionActionDelegate {
 class TransitionActionListDelageteBuilder extends TransitionActionDelegate {
   /// Constructor
   TransitionActionListDelageteBuilder({
-    required this.pages,
+    required this.child,
   });
 
   /// Page lists
-  final Widget? pages;
+  final Widget? child;
 
   @override
   Widget build(BuildContext cntext, int index, Animation? animation,
           TransitionActionType actionType) =>
-      pages!;
+      child!;
 }
 
 class _TransitionScope extends InheritedWidget {
@@ -52,13 +52,16 @@ class _TransitionScope extends InheritedWidget {
     required this.state,
   }) : super(key: key, child: child);
 
-  final PageTransitonViewState state;
+  final PageTransitionViewState state;
 
   @override
   bool updateShouldNotify(_TransitionScope oldWidget) =>
       oldWidget.state != state;
 }
 
+/// PageTransitionController return [PageTransitionView] animation, pages index.
+///
+/// Default value have [PageTransitionController]
 class PageTransitionController {
   /// Constructor PageTransitionController
   PageTransitionController({
@@ -79,8 +82,8 @@ class PageTransitionController {
   Animation? changeAnimation;
 }
 
-class PageTransitonView extends StatefulWidget {
-  PageTransitonView({
+class PageTransitionView extends StatefulWidget {
+  PageTransitionView({
     Key? key,
     required List<Widget>? pages,
     Axis? direction,
@@ -96,8 +99,8 @@ class PageTransitonView extends StatefulWidget {
           direction: direction,
         );
 
-  /// Constructor PageTransitionView [PageTransitonView.builder]
-  const PageTransitonView.builder({
+  /// Constructor PageTransitionView [PageTransitionView.builder]
+  const PageTransitionView.builder({
     Key? key,
     required this.pages,
     this.direction = Axis.horizontal,
@@ -120,7 +123,7 @@ class PageTransitonView extends StatefulWidget {
   /// Page List
   final List<Widget>? pages;
 
-  /// Specifies to close this slidable after the closest [PageTransitonView]'s position changed.
+  /// Specifies to close this slidable after the closest [PageTransitionView]'s position changed.
   /// If false, the child will not show.
   final bool? isShow;
 
@@ -128,24 +131,24 @@ class PageTransitonView extends StatefulWidget {
   final TransitionActionType? actionType;
 
   /// [_TransitionScope] changable position control.
-  static PageTransitonViewState? of(BuildContext context) {
+  static PageTransitionViewState? of(BuildContext context) {
     final _TransitionScope? scope =
         context.dependOnInheritedWidgetOfExactType<_TransitionScope>();
     return scope?.state;
   }
 
   @override
-  PageTransitonViewState createState() => PageTransitonViewState();
+  PageTransitionViewState createState() => PageTransitionViewState();
 }
 
-class PageTransitonViewState extends State<PageTransitonView>
+class PageTransitionViewState extends State<PageTransitionView>
     with TickerProviderStateMixin {
   /// Number of Pages Widget.
   int? pageCount;
 
   /// Pages Offset position set-get
   Offset position = Offset(0, 0);
-  Alignment _dragAlignment = Alignment.center;
+  Alignment _dragAlignment = Alignment(0.0, 0.0);
 
   /// Animation Transition Controller
   AnimationController? _transitionAnimationController;
@@ -158,9 +161,7 @@ class PageTransitonViewState extends State<PageTransitonView>
     super.initState();
     _transitionAnimationController = AnimationController(vsync: this);
     _transitionAnimationController!.addListener(() {
-      setState(() {
-        _dragAlignment = _transitonAnimation!.value;
-      });
+      setState(() {});
     });
   }
 
@@ -177,40 +178,19 @@ class PageTransitonViewState extends State<PageTransitonView>
   /// [GestureDetector] returns values [detail] location position.
   void changePage(detail) {
     if (detail is DragUpdateDetails) {
-      setState(() => _dragAlignment += Alignment(
-          detail.delta.dx / (MediaQuery.of(context).size.width / 8), 0));
+      setState(() => _dragAlignment += Alignment(detail.delta.dx / 10.0, 0));
     }
     if (detail is DragDownDetails) _transitionAnimationController!.stop();
-    if (detail is DragEndDetails)
+    if (detail is DragEndDetails) {
       _runAnimation(detail, MediaQuery.of(context).size);
+      print(detail.velocity.pixelsPerSecond.dx);
+    }
   }
 
-  void _runAnimation(DragEndDetails detail, Size size) {
-    final pixelsPerSecond = detail.velocity.pixelsPerSecond;
+  void _runAnimation(DragEndDetails detail, Size size) {}
 
-    _transitonAnimation = _transitionAnimationController!.drive(
-      AlignmentTween(
-        begin: _dragAlignment,
-        end: Alignment.center,
-      ),
-    );
-    final unitsPerSecondX = pixelsPerSecond.dx / size.width;
-    final unitsPerSecondY = pixelsPerSecond.dy / size.height;
-    final unitsPerSecond = Offset(unitsPerSecondX, unitsPerSecondY);
-    final unitVelocity = unitsPerSecond.distance;
-
-    const spring = SpringDescription(
-      mass: 30,
-      stiffness: 1,
-      damping: 1,
-    );
-
-    final simulation = SpringSimulation(spring, 0, 1, -unitVelocity);
-    _transitionAnimationController!.animateWith(simulation);
-  }
-
-  /// Check TransitionType
-  bool get _actionType => widget.actionType == TransitionActionType.none;
+  // /// Check TransitionType
+  // bool get _actionType => widget.actionType == TransitionActionType.none;
 
   /// Check Position by use Axis direction.
   Widget _checkPositionWidget(Widget child) {
@@ -230,29 +210,45 @@ class PageTransitonViewState extends State<PageTransitonView>
     return Container();
   }
 
-  @override
-  void didUpdateWidget(PageTransitonView oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.isShow != oldWidget.isShow) {}
+  // @override
+  // void didUpdateWidget(PageTransitionView oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
+  //   if (widget.isShow != oldWidget.isShow) {}
+  // }
+
+  /// Index 0 widget returns [GestureDetector] detail
+  ///
+  ///
+  /// Which page is current page control.
+  Widget _listLayout() {
+    final content = <Widget>[];
+    final p = widget.pages!.length;
+
+    for (var i = 0; i < p; i++) {
+      content.add(
+        _TransitionScope(
+          child: PageTransitionAction(
+            alignment: widget.isShow! ? _dragAlignment : null,
+            child: widget.pages![i],
+          ),
+          state: this,
+        ),
+      );
+    }
+    return Container();
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Align(
-      alignment: _dragAlignment,
-      child: _TransitionScope(
-        state: this,
-        child: Stack(
-          children: [
-            PageTransitionAction(
-              child: Container(
-                color: Colors.red,
-                width: size.width * .6,
-                height: 200.0,
-              ),
-            ),
-          ],
+    return _TransitionScope(
+      state: this,
+      child: PageTransitionAction(
+        alignment: _dragAlignment,
+        child: Container(
+          color: Colors.blue,
+          width: size.width * .9,
+          height: 500.0,
         ),
       ),
     );
