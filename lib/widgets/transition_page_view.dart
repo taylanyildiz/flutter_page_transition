@@ -195,6 +195,8 @@ class PageTransitionViewState extends State<PageTransitionView>
   }
 
   /// Horizontol position controller clap([-15.0],[+15.0])
+  ///
+  /// Changing current page
   void _runAnimation(DragEndDetails detail, Size size) {
     final pixelsPerSecond = detail.velocity.pixelsPerSecond;
     print('aling : ${_dragAlignment.x}');

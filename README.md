@@ -28,6 +28,31 @@ A new Flutter project.
         direction: Axis.horizontal,
         pages: _screens,
     ),
+
+    PageTransitionAction(
+        alignment: _dragAlignment,
+        child: Container(
+            color: Colors.blue,
+            width: size.width * .9,
+            height: 500.0,
+        ),
+    ),
+   PageTransitionAction(
+        alignment: Alignment(_dragAlignment.x + 20.0, 0),
+        child: Container(
+            color: Colors.red,
+            width: size.width * .9,
+            height: 500.0,
+        ),
+    ),
+    PageTransitionAction(
+        alignment: Alignment(_dragAlignment.x + 40.0, 0),
+        child: Container(
+            color: Colors.orange,
+            width: size.width * .9,
+            height: 500.0,
+        ),
+    ),
 ```
 
 ### Doc.
@@ -43,7 +68,7 @@ A new Flutter project.
 /// See also
 /// 
 /// 
-/// *[Alignment] direction ([Offset.dx], [Offset.dy])
+/// * [Alignment] direction ([Offset.dx], [Offset.dy])
 ```
 
 ## Getting Started
