@@ -2,6 +2,8 @@
 
 A new Flutter project.
 ###
+![Overview](https://user-images.githubusercontent.com/37551474/116740100-353de180-a9fd-11eb-95e6-2e6b0e40e9ac.mp4)
+
 ## How To Use
 
 
@@ -30,7 +32,17 @@ A new Flutter project.
 ### Doc.
 
 ```dart
-
+/// For now it's just a repositionable [Widget], but more will come soon.
+/// Imagine pageview but you can choose the animation you want. By keeping 
+/// it very simple to use, the user will have a [Widget] that is far from all details.
+/// Featuring animated transitions, page design and a control class, this widget will
+/// give you a lot of possibilities.[PageTransitionController]
+/// alignment is entirely at the user's discretion. [Axis] horizontal or vertical 
+///
+/// See also
+/// 
+/// 
+/// *[Alignment] direction ([Offset.dx], [Offset.dy])
 ```
 
 ## Getting Started
