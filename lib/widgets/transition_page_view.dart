@@ -78,8 +78,24 @@ class PageTransitionController {
 }
 
 class PageTransitonView extends StatefulWidget {
-  /// Constructor PageTransitionView
-  const PageTransitonView({
+  PageTransitonView({
+    Key? key,
+    required List<Widget>? pages,
+    Axis? direction,
+    bool isShow = false,
+    PageTransitionController? controller,
+    TransitionActionType? actionType,
+  }) : this.builder(
+          key: key,
+          pages: pages,
+          isShow: isShow,
+          controller: controller,
+          actionType: actionType,
+          direction: direction,
+        );
+
+  /// Constructor PageTransitionView [PageTransitonView.builder]
+  const PageTransitonView.builder({
     Key? key,
     required this.pages,
     this.direction = Axis.horizontal,
@@ -136,30 +152,24 @@ class PageTransitonViewState extends State<PageTransitonView>
   @override
   void initState() {
     super.initState();
-    _transitionAnimationController = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: 1),
-    );
-    _transitonAnimation = CurvedAnimation(
-      parent: _transitionAnimationController!,
-      curve: Interval(0.0, 1.0, curve: Curves.linear),
-    );
   }
 
   @override
   void dispose() {
-    _transitionAnimationController!.dispose();
-
     super.dispose();
   }
 
+  /// If direction is horizontal returns true.
+  ///
+  /// Default direction is horizontal
   bool get direction => widget.direction == Axis.horizontal;
 
-  void changePage(DragUpdateDetails detail) {
+  /// [GestureDetector] returns values [detail] location position.
+  void changePage(detail) {
     print('detail = $detail');
-    setState(() {
-      position = detail.globalPosition;
-    });
+    if (detail is DragUpdateDetails) {}
+    if (detail is DragDownDetails) {}
+    if (detail is DragEndDetails) {}
   }
 
   /// Check TransitionType

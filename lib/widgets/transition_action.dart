@@ -5,7 +5,6 @@ abstract class RepleceablePageAction extends StatelessWidget {
   RepleceablePageAction({
     Key? key,
     this.direction = Axis.horizontal,
-    this.onChangePosition,
     this.currentPage = false,
   }) : super(key: key);
 
@@ -23,7 +22,7 @@ abstract class RepleceablePageAction extends StatelessWidget {
   /// show current page
   ///
   /// Change poisiton with gesture <=> position [Offset] Horizontal change position
-  final ValueChanged? onChangePosition;
+  late final ValueChanged? onChangePosition;
 
   /// Calls [onChangePosition] if not null and change the [TransitionPage]
   /// that encloses the given context
@@ -32,7 +31,7 @@ abstract class RepleceablePageAction extends StatelessWidget {
   /// Calls [onChangePosition] if not null and change the [TransitionPage]
   /// that encloses the given context
   /// this position  [DragUpdateDetails] change our showing page horizontal
-  void _handleChangePosition(BuildContext context, DragUpdateDetails detail) {
+  void _handleChangePosition(BuildContext context, detail) {
     onChangePosition?.call(detail);
     PageTransitonView.of(context)!.changePage(detail);
   }
@@ -43,12 +42,9 @@ abstract class RepleceablePageAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onVerticalDragUpdate: (detail) => !directionIsAxis && currentPage
-          ? _handleChangePosition(context, detail)
-          : null,
-      onHorizontalDragUpdate: (detail) => directionIsAxis && currentPage
-          ? _handleChangePosition(context, detail)
-          : null,
+      onPanUpdate: (detail) => _handleChangePosition(context, detail),
+      onPanEnd: (detail) => _handleChangePosition(context, detail),
+      onPanDown: (detail) => _handleChangePosition(context, detail),
       child: buildAction(context),
     );
   }
@@ -58,14 +54,12 @@ abstract class RepleceablePageAction extends StatelessWidget {
 }
 
 class PageTransitionAction extends RepleceablePageAction {
-  /// Constructor [PageTransitionAction]
+  /// Constructor [PageTransitionAction] child [PageTransitonView]
   PageTransitionAction({
     Key? key,
     required this.child,
-    required ValueChanged? onChangePosition,
     bool currentPage = false,
   }) : super(
-          onChangePosition: onChangePosition,
           key: key,
           currentPage: currentPage,
         );

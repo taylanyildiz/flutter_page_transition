@@ -31,7 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
         width: 200,
         color: Colors.yellow,
       ),
-      onChangePosition: (page) {},
     ),
     Scaffold(backgroundColor: Colors.red),
     Scaffold(backgroundColor: Colors.orange),
