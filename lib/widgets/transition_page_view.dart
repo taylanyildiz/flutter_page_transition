@@ -194,14 +194,14 @@ class PageTransitionViewState extends State<PageTransitionView>
     }
   }
 
-  /// Horizontol position controller clap([-15.0],[+15.0])
-  ///
+  /// Horizontol position controller clap([-8.0],[+8.0])
+  /// All widget [Alignment.x] connected eachother must be.!
   /// Changing current page
   void _runAnimation(DragEndDetails detail, Size size) {
     final pixelsPerSecond = detail.velocity.pixelsPerSecond;
     print('aling : ${_dragAlignment.x}');
-    if ((_dragAlignment.x > -15.0 && _dragAlignment.x < 0) ||
-        (_dragAlignment.x > 0 && _dragAlignment.x < 15.0)) {
+    if ((_dragAlignment.x > -8.0 && _dragAlignment.x < 0) ||
+        (_dragAlignment.x > 0 && _dragAlignment.x < 8.0)) {
       _positionAnimation = _transitionAnimationController!.drive(
         AlignmentTween(
           begin: _dragAlignment,
@@ -264,16 +264,13 @@ class PageTransitionViewState extends State<PageTransitionView>
 
     for (var i = 0; i < p; i++) {
       content.add(
-        _TransitionScope(
-          child: PageTransitionAction(
-            alignment: widget.isShow! ? _dragAlignment : null,
-            child: widget.pages![i],
-          ),
-          state: this,
+        PageTransitionAction(
+          alignment: Alignment(_dragAlignment.x + (i * 10.0), 0.0),
+          child: widget.pages![i],
         ),
       );
     }
-    return Container();
+    return Stack(children: content);
   }
 
   @override
@@ -281,34 +278,7 @@ class PageTransitionViewState extends State<PageTransitionView>
     final size = MediaQuery.of(context).size;
     return _TransitionScope(
       state: this,
-      child: Stack(
-        children: [
-          PageTransitionAction(
-            alignment: _dragAlignment,
-            child: Container(
-              color: Colors.blue,
-              width: size.width * .9,
-              height: 500.0,
-            ),
-          ),
-          PageTransitionAction(
-            alignment: Alignment(_dragAlignment.x + 20.0, 0),
-            child: Container(
-              color: Colors.red,
-              width: size.width * .9,
-              height: 500.0,
-            ),
-          ),
-          PageTransitionAction(
-            alignment: Alignment(_dragAlignment.x + 40.0, 0),
-            child: Container(
-              color: Colors.orange,
-              width: size.width * .9,
-              height: 500.0,
-            ),
-          ),
-        ],
-      ),
+      child: _listLayout(),
     );
   }
 }

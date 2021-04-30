@@ -25,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -32,18 +33,18 @@ class _HomeScreenState extends State<HomeScreen> {
           PageTransitionView(
             pages: [
               Container(
-                width: 100.0,
-                height: 100.0,
+                width: size.width * .8,
+                height: 400.0,
                 color: Colors.red,
               ),
               Container(
-                width: 100.0,
-                height: 100.0,
+                width: size.width * .8,
+                height: 400.0,
                 color: Colors.orange,
               ),
               Container(
-                width: 100.0,
-                height: 100.0,
+                width: size.width * .8,
+                height: 400.0,
                 color: Colors.blue,
               )
             ],
