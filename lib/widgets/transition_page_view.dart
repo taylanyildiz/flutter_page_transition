@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'package:flutter_page_transition/widgets/widget.dart';
 
 /// [TransitionActionType] change page animation
@@ -107,7 +108,8 @@ class PageTransitionView extends StatefulWidget {
     this.isShow = true,
     this.controller,
     this.actionType = TransitionActionType.none,
-  }) : super(key: key);
+  })  : assert(pages != null),
+        super(key: key);
 
   /// Page Direction
   ///
@@ -153,21 +155,27 @@ class PageTransitionViewState extends State<PageTransitionView>
   /// Animation Transition Controller
   AnimationController? _transitionAnimationController;
 
-  /// Animation transition Animation
-  Animation<Alignment>? _transitonAnimation;
+  /// Animation controller position
+  Animation<Alignment>? _positionAnimation;
+
+  /// Animation page transition control
+  Animation<Alignment>? _transitionAnimation;
 
   @override
   void initState() {
     super.initState();
     _transitionAnimationController = AnimationController(vsync: this);
     _transitionAnimationController!.addListener(() {
-      setState(() {});
+      setState(() {
+        setState(() => _dragAlignment = _positionAnimation!.value);
+      });
     });
   }
 
   @override
   void dispose() {
     super.dispose();
+    _transitionAnimationController!.dispose();
   }
 
   /// If direction is horizontal returns true.
@@ -183,11 +191,39 @@ class PageTransitionViewState extends State<PageTransitionView>
     if (detail is DragDownDetails) _transitionAnimationController!.stop();
     if (detail is DragEndDetails) {
       _runAnimation(detail, MediaQuery.of(context).size);
-      print(detail.velocity.pixelsPerSecond.dx);
     }
   }
 
-  void _runAnimation(DragEndDetails detail, Size size) {}
+  /// Horizontol position controller clap([-15.0],[+15.0])
+  void _runAnimation(DragEndDetails detail, Size size) {
+    final pixelsPerSecond = detail.velocity.pixelsPerSecond;
+    print('aling : ${_dragAlignment.x}');
+    if ((_dragAlignment.x > -15.0 && _dragAlignment.x < 0) ||
+        (_dragAlignment.x > 0 && _dragAlignment.x < 15.0)) {
+      _positionAnimation = _transitionAnimationController!.drive(
+        AlignmentTween(
+          begin: _dragAlignment,
+          end: Alignment(0.0, 0.0),
+        ),
+      );
+      final unitsPerSecondX = pixelsPerSecond.dx / size.width;
+      final unitsPerSecondY = pixelsPerSecond.dy / size.height;
+      final unitsPerSecond = Offset(unitsPerSecondX, unitsPerSecondY);
+      final unitVelocity = unitsPerSecond.distance;
+
+      const spring = SpringDescription(
+        mass: 30,
+        stiffness: 1,
+        damping: 1,
+      );
+
+      final simulation = SpringSimulation(spring, 0, 1, -unitVelocity);
+
+      _transitionAnimationController!.animateWith(simulation);
+    } else {
+      if (_dragAlignment.x < 0) {}
+    }
+  }
 
   // /// Check TransitionType
   // bool get _actionType => widget.actionType == TransitionActionType.none;
@@ -243,13 +279,33 @@ class PageTransitionViewState extends State<PageTransitionView>
     final size = MediaQuery.of(context).size;
     return _TransitionScope(
       state: this,
-      child: PageTransitionAction(
-        alignment: _dragAlignment,
-        child: Container(
-          color: Colors.blue,
-          width: size.width * .9,
-          height: 500.0,
-        ),
+      child: Stack(
+        children: [
+          PageTransitionAction(
+            alignment: _dragAlignment,
+            child: Container(
+              color: Colors.blue,
+              width: size.width * .9,
+              height: 500.0,
+            ),
+          ),
+          PageTransitionAction(
+            alignment: Alignment(_dragAlignment.x + 20.0, 0),
+            child: Container(
+              color: Colors.red,
+              width: size.width * .9,
+              height: 500.0,
+            ),
+          ),
+          PageTransitionAction(
+            alignment: Alignment(_dragAlignment.x + 40.0, 0),
+            child: Container(
+              color: Colors.orange,
+              width: size.width * .9,
+              height: 500.0,
+            ),
+          ),
+        ],
       ),
     );
   }

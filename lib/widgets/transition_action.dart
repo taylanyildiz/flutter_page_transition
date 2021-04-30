@@ -1,39 +1,40 @@
 import 'package:flutter/material.dart';
 import 'widget.dart';
 
+/// Default Alignment value.
 final _alignDefault = Alignment(0.0, 0.0);
 
 abstract class ReplaceablePageAction extends StatelessWidget {
-  /// Constructor ReplaceablePageAction
+  /// Constructor ReplaceablePageAction.
   ReplaceablePageAction({
     Key? key,
     this.direction = Axis.horizontal,
     this.currentPage = false,
   }) : super(key: key);
 
-  /// Display current screen
+  /// Display current screen.
   ///
-  /// Default false
+  /// Default false.
   final bool currentPage;
 
-  /// Gesturedector Drag update offset need
+  /// Gesturedector Drag update offset need.
   ///
-  /// Default [Axis] horizontal
+  /// Default [Axis] horizontal.
   final Axis direction;
 
-  /// Every screen widget have position and can be change
-  /// show current page
+  /// Every screen widget have position and can be change.
+  /// show current page.
   ///
-  /// Change poisiton with gesture <=> position [Offset] Horizontal change position
+  /// Change poisiton with gesture <=> position [Offset] Horizontal change position.
   late final ValueChanged? onChangePosition;
 
-  /// Calls [onChangePosition] if not null and change the [TransitionPage]
-  /// that encloses the given context
-  /// this position  [DragUpdateDetails] change our showing page horizontal
+  /// Calls [onChangePosition] if not null and change the [TransitionPage].
+  /// that encloses the given context.
+  /// this position  [DragUpdateDetails] change our showing page horizontal.
 
   /// Calls [onChangePosition] if not null and change the [TransitionPage]
-  /// that encloses the given context
-  /// this position  [DragUpdateDetails] change our showing page horizontal
+  /// that encloses the given context.
+  /// this position  [DragUpdateDetails] change our showing page horizontal.
   void _handleChangePosition(BuildContext context, detail) {
     PageTransitionView.of(context)!.changePage(detail);
   }
@@ -41,6 +42,7 @@ abstract class ReplaceablePageAction extends StatelessWidget {
   /// If the [Axis] is horziontal return true
   bool get directionIsAxis => direction == Axis.horizontal;
 
+  /// Also we need [GestureDetector] for change position child [Widget].
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -51,12 +53,13 @@ abstract class ReplaceablePageAction extends StatelessWidget {
     );
   }
 
+  /// Returns [PageTransitionAction] Widget child.
   @protected
   Widget buildAction(BuildContext context);
 }
 
 class PageTransitionAction extends ReplaceablePageAction {
-  /// Constructor [PageTransitionAction] child [PageTransitionView]
+  /// Constructor [PageTransitionAction] child [PageTransitionView].
   PageTransitionAction({
     Key? key,
     required this.child,
@@ -67,12 +70,13 @@ class PageTransitionAction extends ReplaceablePageAction {
           currentPage: currentPage,
         );
 
-  /// Returns build action widget
+  /// Returns build action widget.
   final Widget child;
 
-  /// Every page have alignment
+  /// Every page have alignment.
   final Alignment? alignment;
 
+  /// Returns widget child.
   @override
   Widget buildAction(BuildContext context) => Align(
         alignment: alignment ?? _alignDefault,
