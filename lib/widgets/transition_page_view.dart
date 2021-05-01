@@ -129,7 +129,7 @@ class PageTransitionView extends StatefulWidget {
   /// If false, the child will not show.
   final bool? isShow;
 
-  /// Transition page animation selected
+  /// Transition page animation mode selection
   final TransitionActionType? actionType;
 
   /// [_TransitionScope] changable position control.
